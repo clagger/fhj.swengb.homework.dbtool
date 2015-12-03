@@ -3,12 +3,16 @@ package fhj.swengb.homework.dbtool
 import java.net.URL
 import java.sql.{Connection, DriverManager, ResultSet, Statement}
 import java.util.ResourceBundle
-import javafx.collections.FXCollections
+import javafx.application.Application
+import javafx.collections.{ObservableList, FXCollections}
 import javafx.fxml.{FXML, Initializable, FXMLLoader}
 import javafx.scene.control.TableView
 import javafx.scene.layout.AnchorPane
 import javafx.scene.{Scene, Parent}
 import javafx.stage.Stage
+import javax.swing.table.TableColumn
+
+import javafx.scene.control.cell.PropertyValueFactory
 
 import fhj.swengb.homework.dbtool.Product._
 import fhj.swengb.homework.dbtool.Customer._
@@ -132,7 +136,10 @@ object DbTool {
          y <- Customer.fromDb(Customer.queryAll(con))} {
       println(y)
     }
+
+    Application.launch(classOf[DbTool], args: _*)
   }
+
 
 }
 
@@ -159,7 +166,11 @@ class DbTool extends javafx.application.Application {
 
 class DBToolController extends Initializable {
   @FXML var anchorpane: AnchorPane = _
-  @FXML var tableview: TableView = _
+  @FXML var tableview: TableView[Product] = _
+  @FXML var c1 : TableColumn[Int] = _
+  @FXML var c2 : TableColumn[String] = _
+  @FXML var c3 : TableColumn[Double] = _
+
 
 
 
@@ -169,7 +180,7 @@ class DBToolController extends Initializable {
   }
 
   def initializeGUI():Unit = {
-
+    getProducts()
 
   }
 
@@ -178,31 +189,22 @@ class DBToolController extends Initializable {
 
     // http://stackoverflow.com/questions/18497699/populate-a-tableview-using-database-in-javafx
 
-      val products = FXCollections.observableArrayList()
 
-    try{
-      val sql:String = "Select * from Product"
 
-      for {con <- Db.maybeConnection
-           y <- Customer.fromDb(Customer.queryAll(con))
-           val rs:ResultSet = con.createStatement().executeQuery(sql)
-      }
+      val products:ObservableList[Product] = FXCollections.observableArrayList()
+      val con:Connection = Db.maybeConnection.get
+      val rs:ResultSet = Product.queryAll(con)
 
       while(rs.next()){
-        val  product:Product = new Product()
+        val product = new Product(rs.getInt("id"), rs.getString("name"), rs.getDouble("price"))
 
-
-        cm.userName.set(rs.getString("UserName"));
-        cm.userPassword.set(rs.getString("UserPassword"));
-        cm.userType.set(rs.getString("UserType"));
-        data.add(cm);
+        products.add(product)
       }
-      tableview.setItems(data);
-    }
-    catch(Exception e){
-      e.printStackTrace();
-      System.out.println("Error on Building Data");
-    }
+
+      tableview.setItems(products)
+      tableview.refresh()
+
+
 
   }
 
