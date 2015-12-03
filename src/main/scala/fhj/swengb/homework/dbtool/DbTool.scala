@@ -102,7 +102,7 @@ object DbTool {
   val p9:Product = Product(9,"Produkt9",9.0)
 
   val products:Set[Product] = Set(p1,p2,p3,p4,p5,p6,p7,p8,p9)
-
+// test
 
 
   def main(args: Array[String]) {
