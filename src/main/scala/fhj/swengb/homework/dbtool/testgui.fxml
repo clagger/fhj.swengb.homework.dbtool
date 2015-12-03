@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.*?>
 
 
-<AnchorPane fx:id="anchorpane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="864.0" prefWidth="1267.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fhj.swengb.homework.dbtool.DbToolController">
+<AnchorPane fx:id="anchorpane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="864.0" prefWidth="1267.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fhj.swengb.homework.dbtool.DBToolController">
    <children>
       <TableView fx:id="tableview" layoutX="14.0" layoutY="43.0" prefHeight="629.0" prefWidth="800.0">
         <columns>

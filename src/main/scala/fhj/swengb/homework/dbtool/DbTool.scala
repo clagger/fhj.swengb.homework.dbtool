@@ -1,10 +1,19 @@
 package fhj.swengb.homework.dbtool
 
+import java.net.URL
 import java.sql.{Connection, DriverManager, ResultSet, Statement}
+import java.util.ResourceBundle
+import javafx.collections.FXCollections
+import javafx.fxml.{FXML, Initializable, FXMLLoader}
+import javafx.scene.control.TableView
+import javafx.scene.layout.AnchorPane
+import javafx.scene.{Scene, Parent}
+import javafx.stage.Stage
 
 import fhj.swengb.homework.dbtool.Product._
 import fhj.swengb.homework.dbtool.Customer._
 import scala.util.Try
+import scala.util.control.NonFatal
 
 /**
   * Example to connect to a database.
@@ -126,3 +135,78 @@ object DbTool {
   }
 
 }
+
+class DbTool extends javafx.application.Application {
+
+  val Fxml = "testgui.fxml"
+  //val Css = "fhj/swengb/avatarix/Gruppe2Avatarix.css"
+
+  val loader = new FXMLLoader(getClass.getResource(Fxml))
+
+  override def start(stage: Stage): Unit =
+    try {
+      stage.setTitle("DBTool")
+      loader.load[Parent]() // side effect
+      val scene = new Scene(loader.getRoot[Parent])
+      stage.setScene(scene)
+      //stage.getScene.getStylesheets.add(Css)
+      stage.show()
+    } catch {
+      case NonFatal(e) => e.printStackTrace()
+    }
+
+}
+
+class DBToolController extends Initializable {
+  @FXML var anchorpane: AnchorPane = _
+  @FXML var tableview: TableView = _
+
+
+
+  override def initialize(location: URL, resources: ResourceBundle): Unit = {
+
+    initializeGUI()
+  }
+
+  def initializeGUI():Unit = {
+
+
+  }
+
+
+  def getProducts(): Unit = {
+
+    // http://stackoverflow.com/questions/18497699/populate-a-tableview-using-database-in-javafx
+
+      val products = FXCollections.observableArrayList()
+
+    try{
+      val sql:String = "Select * from Product"
+
+      for {con <- Db.maybeConnection
+           y <- Customer.fromDb(Customer.queryAll(con))
+           val rs:ResultSet = con.createStatement().executeQuery(sql)
+      }
+
+      while(rs.next()){
+        val  product:Product = new Product()
+
+
+        cm.userName.set(rs.getString("UserName"));
+        cm.userPassword.set(rs.getString("UserPassword"));
+        cm.userType.set(rs.getString("UserType"));
+        data.add(cm);
+      }
+      tableview.setItems(data);
+    }
+    catch(Exception e){
+      e.printStackTrace();
+      System.out.println("Error on Building Data");
+    }
+
+  }
+
+}
+
+
+
